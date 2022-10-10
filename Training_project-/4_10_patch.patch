@@ -1,0 +1,174 @@
+diff --git a/Debug/Training_Project.exe b/Debug/Training_Project.exe
+index b9ad13c..8b82037 100644
+Binary files a/Debug/Training_Project.exe and b/Debug/Training_Project.exe differ
+diff --git a/Debug/src/CEO.o b/Debug/src/CEO.o
+index 99ea11d..0ab7ffc 100644
+Binary files a/Debug/src/CEO.o and b/Debug/src/CEO.o differ
+diff --git a/Debug/src/DEVELOPER.o b/Debug/src/DEVELOPER.o
+index 32b36a9..04bafb9 100644
+Binary files a/Debug/src/DEVELOPER.o and b/Debug/src/DEVELOPER.o differ
+diff --git a/Debug/src/HR.o b/Debug/src/HR.o
+index bacd59d..44ca9a6 100644
+Binary files a/Debug/src/HR.o and b/Debug/src/HR.o differ
+diff --git a/Debug/src/MANAGER.o b/Debug/src/MANAGER.o
+index a868716..0c96afe 100644
+Binary files a/Debug/src/MANAGER.o and b/Debug/src/MANAGER.o differ
+diff --git a/Debug/src/TEAM_LEAD.o b/Debug/src/TEAM_LEAD.o
+index 3941d43..7356244 100644
+Binary files a/Debug/src/TEAM_LEAD.o and b/Debug/src/TEAM_LEAD.o differ
+diff --git a/Debug/src/TESTER.o b/Debug/src/TESTER.o
+index f3f2fbb..39ebac7 100644
+Binary files a/Debug/src/TESTER.o and b/Debug/src/TESTER.o differ
+diff --git a/Debug/src/Training_Project.o b/Debug/src/Training_Project.o
+index 3794f51..e219117 100644
+Binary files a/Debug/src/Training_Project.o and b/Debug/src/Training_Project.o differ
+diff --git a/Debug/src/company.o b/Debug/src/company.o
+deleted file mode 100644
+index 739012f..0000000
+Binary files a/Debug/src/company.o and /dev/null differ
+diff --git a/Debug/src/department.o b/Debug/src/department.o
+deleted file mode 100644
+index 2c7e757..0000000
+Binary files a/Debug/src/department.o and /dev/null differ
+diff --git a/Debug/src/employee.o b/Debug/src/employee.o
+deleted file mode 100644
+index 3ff3894..0000000
+Binary files a/Debug/src/employee.o and /dev/null differ
+diff --git a/Debug/src/hash.o b/Debug/src/hash.o
+deleted file mode 100644
+index cc8c0a0..0000000
+Binary files a/Debug/src/hash.o and /dev/null differ
+diff --git a/headers/company.h b/headers/company.h
+index 7049403..25baf38 100644
+--- a/headers/company.h
++++ b/headers/company.h
+@@ -21,11 +21,13 @@ private:
+     std::vector<Department> MainDeps;
+     static Company *compObject;
+     static std::set<std::string> ChildsOfDeps;
++
+     Company();
+     ~Company();
+ public:
+     static std::vector<Employee> empsOfMultiDeps_Results;
+     static std::vector<Employee> listOfFloatingEmps;
++    static std::set<int> SetOfEmpsOfDeps;
+     static std::vector<Employee> EmpsOfAllCompany;//all employees in company(regardless if they are in deps or not)
+     static std::vector<Employee> allEmpsOfDepartments;//employees in Deps in company
+     static Company *getCompObject(){
+@@ -41,7 +43,7 @@ public:
+     void removeMainDepFromCompany(Department dep);
+     void addEmpToCompany(Employee emp);
+     void removeEmpFromCompany(Employee emp);
+-    std::vector<Employee> allEmployees();
++    std::set<int> allEmployees();
+     std::vector<Employee> empsWithSameSalary();
+     std::vector<Employee> empsOfMultiDeps();
+     bool loop_IN_Deps_hand(Department dep);
+diff --git a/src/Training_Project.cpp b/src/Training_Project.cpp
+index 5f8bda7..3cf71cb 100644
+--- a/src/Training_Project.cpp
++++ b/src/Training_Project.cpp
+@@ -873,7 +873,7 @@ TEST_F(companyTest, AllEmployeesOfDeps) {
+ 	dep9->addEmpToDep(*emp5,comp);
+ 	dep8->addEmpToDep(*emp1,comp);
+ 	comp->allEmployees();
+-	EXPECT_EQ( 11,(int)comp->allEmpsOfDepartments.size());
++	EXPECT_EQ( 11,(int)comp->SetOfEmpsOfDeps.size());
+ 
+ 
+ 	   // ASSERT_TRUE(1 == 1);
+diff --git a/src/company.cpp b/src/company.cpp
+index ddc3c0f..add500c 100644
+--- a/src/company.cpp
++++ b/src/company.cpp
+@@ -15,6 +15,7 @@ using namespace std;
+  vector<Employee> Company::allEmpsOfDepartments  = {};//ALL EMPS FILLED BY A FUNCTION IN COMPANY
+  vector<Employee> Company::EmpsOfAllCompany = {};
+  set<string> Company::ChildsOfDeps={};
++ set<ints> Company::SetOfEmpsOfDeps={};
+  vector<Employee> Company::listOfFloatingEmps={};
+  vector<Employee> Company::empsOfMultiDeps_Results={};
+ Company::Company(){
+@@ -56,25 +57,37 @@ void Company::removeMainDepFromCompany(Department dep){
+ 	     return;
+ 	 }
+ }
+-void allEmpsFun(Department dep,Company *obj ){
+-     obj->allEmpsOfDepartments.insert(obj->allEmpsOfDepartments.end(), dep.getEmpsOfDep()->begin(),dep.getEmpsOfDep()->end() );//stops here
++set<int> allEmpsFun(Department dep,Company *obj ){
++    obj->allEmpsOfDepartments.insert(obj->allEmpsOfDepartments.end(), dep.getEmpsOfDep()->begin(),dep.getEmpsOfDep()->end() );//Appending a vector to another vector -for further use(in the empsOfMultiDeps API)
++    for(auto it=dep.getEmpsOfDep()->begin();it!=dep.getEmpsOfDep()->end();it++){
++    	/*if(ChildsOfDeps.find((*it1).getDepName())==ChildsOfDeps.end()){
++    					ChildsOfDeps.insert((*it1).getDepName());
++    			}*/
++    	if(obj->SetOfEmpsOfDeps.find((*it).getEmpId())==obj->SetOfEmpsOfDeps.end()){
++    		obj->SetOfEmpsOfDeps.insert(*it);
++
++    	}
++    	// obj->SetOfEmpsOfDeps.insert(*it);
++    }
+     if(dep.isAnySubDeps()==1){
+     	for(auto f=dep.getSubDeps()->begin();f!=dep.getSubDeps()->end();f++){
+          allEmpsFun((*f),obj);
+     	}
+     }
+     else{
+-       return ;
++       return obj->SetOfEmpsOfDeps;
+     }
++    return obj->SetOfEmpsOfDeps;
+ }
+-vector<Employee> Company::allEmployees(){
++set<int> Company::allEmployees(){
++	SetOfEmpsOfDeps.clear();
+ 	allEmpsOfDepartments.clear();
+     int size=(int) MainDeps.size();
+     for(int i=0;i<size;i++){
+     	 thread th(allEmpsFun,MainDeps.at(i),this);
+     	 th.join();
+     }
+-    return this->allEmpsOfDepartments;
++    return this->SetOfEmpsOfDeps;
+ }
+ 
+ vector<Employee> Company::empsWithSameSalary(){//API to find employees with same salaries
+@@ -112,8 +125,9 @@ void Company::removeEmpFromCompany(Employee emp){//employees who are in company
+ 	}
+ }
+ vector<Employee> Company::empsOfMultiDeps(){ //finding employees of multiple departments
+-	vector<Employee>  EmpsOfDeps=allEmployees();//getting employees of department
+-	 empsOfMultiDeps_Results={};//vector to store the employees of multiple departments
++	allEmployees();//getting employees of department
++	vector<Employee>  EmpsOfDeps=this->allEmpsOfDepartments;
++	empsOfMultiDeps_Results={};//vector to store the employees of multiple departments
+ 	set<int> SetOfEmps;//set of employees in department without Repetition
+ 	for(auto i=EmpsOfDeps.begin();i!=EmpsOfDeps.end();i++){
+ 		if(SetOfEmps.find((*i).getEmpId())==SetOfEmps.end()){// if not found in setOfDeps add it in SetOfEmps
+@@ -168,7 +182,8 @@ bool Company::loop_IN_Deps_hand(Department 	ParentDep){//recursion function to s
+ }
+ bool Company::floatingEmps(){
+ 	 listOfFloatingEmps={};// clearing vector<Empolyee> listOfFloatingEmps since it is static data member
+-	vector<Employee> AllEmpsOfDeps=allEmployees();//getting Employees of all departments
++	 allEmployees();
++	 vector<Employee> AllEmpsOfDeps=this->allEmpsOfDepartments;//getting Employees of all departments
+ 	for(auto i=EmpsOfAllCompany.begin(); i!=EmpsOfAllCompany.end();i++){//loop in EmpsOfAllCompany (contains employees of departments and employees with no department)
+ 		if(find(AllEmpsOfDeps.begin(),AllEmpsOfDeps.end(),(*i))==AllEmpsOfDeps.end()){//cheacking if employee in EmpsOfAllCompany is also an employee in  department --if no
+ 			if((*i).getRole(this)!="CEO"){//if this employee(with no department) is NOT the CEO then add it to listOfFloatingEmps
+diff --git a/src/department.cpp b/src/department.cpp
+index 1c64e29..80f02bd 100644
+--- a/src/department.cpp
++++ b/src/department.cpp
+@@ -128,9 +128,10 @@ bool Department::removeEmpFromDep(Employee emp){
+ void Department::removeEmpFromDep(Employee emp,Company *compObj){
+ 	Department *dep=findDepartment(this,compObj);//we try to find the department(search for the required department)
+ 	if(!(dep==nullptr)){//the required department is found
+-		if(dep->removeEmpFromDep(emp)){//we make sure the emp is found in the required department and has been deleted
++		bool deletedFromDep=dep->removeEmpFromDep(emp);
++		if(deletedFromDep==1){//we make sure the emp is found in the required department and has been deleted
+ 			Employee *empInOtherDep=findEmployeeInDep(emp,compObj,compObj->getMainDeps());//we check if the emp belongs to another department in company---using findEmployeeInDep function
+-			if(empInOtherDep==nullptr){	//if emp  belongs to another dep---we won't delete it form EmpsOfAllCompany
++			if(empInOtherDep==nullptr){	//if emp  belong to another dep---we won't delete it form EmpsOfAllCompany
+ 				Employee* EmpPtr=findEmployeeInCompany(emp,compObj);
+ 			if(EmpPtr!=nullptr){
+ 				compObj->EmpsOfAllCompany.erase(remove(compObj->EmpsOfAllCompany.begin(), compObj->EmpsOfAllCompany.end(), (*EmpPtr)),  compObj->EmpsOfAllCompany.end());
