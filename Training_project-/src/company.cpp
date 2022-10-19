@@ -61,7 +61,7 @@ void Company::removeMainDepFromCompany(string depName){
 	auto i=find(getMainDeps()->begin(),getMainDeps()->end(), depName);
 	if(i != this->getMainDeps()->end()){
 		  MainDeps.erase(i);
-          cout<<"Main_Department has bee deleted successfully"<<endl;
+          cout<<"Main_Department has been deleted successfully"<<endl;
 	 }else{
 		 cout<<"Department with  "<<depName<<"  is NOT a MAIN department of the company"<<endl;
 	     return;
@@ -72,10 +72,10 @@ void allEmpsFun(Department dep,Company *obj ){
      obj->allEmpsOfDepartments.insert(obj->allEmpsOfDepartments.end(), dep.getEmpsOfDep()->begin(),dep.getEmpsOfDep()->end() );//allowing duplicating) for further use in employees of multiple departments API
      for(auto it =dep.getEmpsOfDep()->begin();it !=dep.getEmpsOfDep()->end();it++){
     	 if(find(obj->empsOfDeps.begin(),obj->empsOfDeps.end(),(*it))==obj->empsOfDeps.end()){//Checking of this employee is already in empsOfDeps--if found don't add it
-    		 obj->empsOfDeps.push_back((*it));//if not found ad it
+    		 obj->empsOfDeps.push_back((*it));//if not found --> add it
     	 }
      }
-    if(dep.isAnySubDeps()==1){//checking if department has sub department or not ---if it has it calls allEmpsFun function on each sub department of that department
+    if(dep.isAnySubDeps()==1){//checking if department has sub department or not ---if it has,it calls allEmpsFun function on each sub department of that department
     	for(auto f=dep.getSubDeps()->begin();f!=dep.getSubDeps()->end();f++){
          allEmpsFun((*f),obj);
     	}
@@ -85,8 +85,8 @@ void allEmpsFun(Department dep,Company *obj ){
     }
 }
 vector<Employee> Company::allEmployees(){
-	allEmpsOfDepartments={};// a vector of employees in departments (allowing duplicating) for further use in employees of multiple departments API
-	empsOfDeps={};// a vector of employees in departments(without allowing duplicating)
+	allEmpsOfDepartments.clear();// a vector of employees in departments (allowing duplicating) for further use in employees of multiple departments API
+	empsOfDeps.clear();// a vector of employees in departments(without allowing duplicating)
     int size=(int) MainDeps.size();
     for(int i=0;i<size;i++){
     	 thread th(allEmpsFun,MainDeps.at(i),this);//a thread for each Main Department in company
@@ -98,7 +98,7 @@ vector<Employee> Company::allEmployees(){
 vector<Employee> Company::empsWithSameSalary(){//API to find employees with same salaries
 	if(EmpsOfAllCompany.size()!=0){//checking if we have any employees in company
 		   Hash hashForEmpsWithSameSalary(EmpsOfAllCompany.size());//creating a hash table with the same size as employees of company
-		   for(auto i=EmpsOfAllCompany.begin();i!=EmpsOfAllCompany.end();i++){//loop through out the employees of company and inserting them to the hash table
+		   for(auto i=EmpsOfAllCompany.begin();i!=EmpsOfAllCompany.end();i++){//loop through out the employees of company and inserting them into the hash table
 			   hashForEmpsWithSameSalary.insertItem((*i));
 		   }
 		   return hashForEmpsWithSameSalary.displayEmployeesWithSameSalary();//returning a vector of Employees with same salary and displaying them
@@ -131,11 +131,11 @@ void Company::removeEmpFromCompany(Employee emp){//employees who are in company 
 }
 vector<Employee> Company::empsOfMultiDeps(){ //finding employees of multiple departments
 	allEmployees();
-	vector<Employee>  EmpsOfDeps=this->allEmpsOfDepartments;//getting employees of department
+	vector<Employee>  EmpsOfDeps=this->allEmpsOfDepartments;//getting employees of department (with multiplication)
 	 empsOfMultiDeps_Results={};//vector to store the employees of multiple departments
 	set<int> SetOfEmps;//set of employees in department without Repetition
 	for(auto i=EmpsOfDeps.begin();i!=EmpsOfDeps.end();i++){
-		if(SetOfEmps.find((*i).getEmpId())==SetOfEmps.end()){// if not found in setOfDeps add it in SetOfEmps
+		if(SetOfEmps.find((*i).getEmpId())==SetOfEmps.end()){// if not found in setOfEmps add it in SetOfEmps
 			SetOfEmps.insert((*i).getEmpId());
 		}else{//if found -then it is an employee of multiDep--we add it to empsOfMultiDeps_Results
 			empsOfMultiDeps_Results.push_back((*i));
@@ -146,9 +146,9 @@ vector<Employee> Company::empsOfMultiDeps(){ //finding employees of multiple dep
 		cout<<"Employee name & ID : "<<	i->getName()<<"  |  "<<i->getEmpId()<<endl;;
 	}
 	return empsOfMultiDeps_Results;
-}//using sets or hash or maps
+}
 bool Company::loop_IN_Deps(){//returns true if we have a department has two parent departments
-	ChildsOfDeps={}; //clear vector<Department> ChildsOfDeps since it is a static
+	ChildsOfDeps={}; //clear set<string> ChildsOfDeps since it is a static
 	bool result;//to return the result
 	for(auto it1=this->getMainDeps()->begin();it1!=this->getMainDeps()->end();it1++){//searching in Main Departments of the company
 		for(auto it2=(*it1).getSubDeps()->begin();it2!=(*it1).getSubDeps()->end();it2++){//children of main deps
@@ -157,7 +157,7 @@ bool Company::loop_IN_Deps(){//returns true if we have a department has two pare
 			}else{
 				return true;
 			}
-			if((*it2).isAnySubDeps()==1){ //checking if department has subDepartments ---if yes we call loop_IN_Deps on that department
+			if((*it2).isAnySubDeps()==1){ //checking if department has subDepartments ---if yes we call loop_IN_Deps_hand on that department
 				result=loop_IN_Deps_hand((*it2));
 				if(result==1){
 					return true;

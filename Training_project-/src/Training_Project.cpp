@@ -15,6 +15,7 @@
 #include "../googleTestLib/gtest/gtest.h"
 #include <iostream>
 #include <stdio.h>
+#include <string>
 using namespace std;
 class Company;
 class Employee;
@@ -823,56 +824,8 @@ int main ()
     return 0;
 }*/
 
-/*void SetupComany(){
-		Company *comp=comp->getCompObject();
-		Department *dep1= new Department("dep1");
-			Department *dep2= new Department("dep2");
-			Department *dep3= new Department("dep3");
-			Department *dep4= new Department("dep4");
-			Department *dep5= new Department("dep5");
-			Department *dep6= new Department("dep6");
-			Department *dep7= new Department("dep7");
-			Department *dep8= new Department("dep8");
-			Department *dep9= new Department("dep9");
-			Department *dep10= new Department("dep10");
-			Employee *emp1=Employee::Create("emp1",16,TESTER,1000);
-		    Employee *emp2=Employee::Create("emp2",25,DEVELOPER,3000);
-		    Employee *emp3=Employee::Create("emp3",24,MANAGER,2300);
-		    Employee *emp4=Employee::Create("emp4",24,DEVELOPER,2300);
-		    Employee *emp5=Employee::Create("emp5",24,TESTER,2350);
-		    Employee *emp6=Employee::Create("emp6",24,DEVELOPER,2360);
-		    Employee *emp7=Employee::Create("emp7",24,HR,6500);
-		    Employee *emp8=Employee::Create("emp8",24,HR,600);
-		    Employee *emp9=Employee::Create("emp9",29,TEAM_LEAD,600);
-			Employee *emp11=Employee::Create("emp11", 10, MANAGER, 2000);
-			Employee *emp10=Employee::Create("emp10",29,DEVELOPER,600);
-			comp->addEmpToCompany(*emp10);
-			comp->addEmpToCompany(*emp11);
-
-			comp->addMainDepToCompany(*dep1);
-			comp->addMainDepToCompany(*dep2);
-			dep1->addSubDep(*dep3,comp);
-			dep1->addSubDep(*dep4,comp);
-			dep3->addSubDep(*dep5,comp);
-			dep3->addSubDep(*dep6,comp);
-			dep2->addSubDep(*dep7,comp);
-			dep2->addSubDep(*dep8,comp);
-			dep7->addSubDep(*dep9,comp);
-			dep7->addSubDep(*dep10,comp);
-			dep8->addSubDep(*dep10,comp);
-			dep1->addEmpToDep(*emp1,comp);
-			dep2->addEmpToDep(*emp2,comp);
-			dep3->addEmpToDep(*emp3,comp);
-			dep4->addEmpToDep(*emp4,comp);
-			dep5->addEmpToDep(*emp5,comp);
-			dep6->addEmpToDep(*emp6,comp);
-			dep7->addEmpToDep(*emp7,comp);
-			dep8->addEmpToDep(*emp8,comp);
-			dep9->addEmpToDep(*emp9,comp);
-			dep9->addEmpToDep(*emp5,comp);
-			dep8->addEmpToDep(*emp1,comp);
-	}*/
 void SetupComany(){
+	cout<<"---------------------start of company setup-----------------------"<<endl;
 	Company *comp=comp->getCompObject();
 		Department *dep1= new Department("dep1");
 			Department *dep2= new Department("dep2");
@@ -921,14 +874,14 @@ void SetupComany(){
 			dep9->addEmpToDep(*emp9,comp);
 			dep9->addEmpToDep(*emp5,comp);
 			dep8->addEmpToDep(*emp1,comp);
+			cout<<"---------------------end of company setup-----------------------"<<endl;
 	}
 class GetEmployeesOfDepartments: public httpserver::http_resource {
 	public:
 	Company *comp=comp->getCompObject();
-
+    string employees;
 		shared_ptr<httpserver::http_response> render_GET(const httpserver::http_request&) {
-			SetupComany();
-			string employees="";
+		    employees.clear();
 	    	comp->allEmployees();
 
 	    	for(int i=0;i<(int)comp->empsOfDeps.size();i++)
@@ -942,7 +895,7 @@ class GetEmployeesOfDepartments: public httpserver::http_resource {
 class AddMainDepartmentToCompany: public httpserver::http_resource {
 	public:
 		Company *comp=comp->getCompObject();
-		shared_ptr<httpserver::http_response> render_PUT(const httpserver::http_request& req){//,string Name,float Age ,ROLE Role,int Salary) {
+		shared_ptr<httpserver::http_response> render_PUT(const httpserver::http_request& req){//
 			Department newDep(req.get_arg("name"));
 			comp->addMainDepToCompany(newDep);
 			return shared_ptr<httpserver::http_response>(new httpserver::string_response("Department added to company : "+ req.get_arg("name")));
@@ -952,9 +905,8 @@ class DeleteDepartmentfromCompany: public httpserver::http_resource {
 	public:
 		Company *comp=comp->getCompObject();
 		shared_ptr<httpserver::http_response> render_DELETE(const httpserver::http_request& req) {
-			//SetupComany();
 			cout<<"----------------------------------------------------"<<endl;
-			comp->removeMainDepFromCompany((string)req.get_arg("name"));
+			comp->removeMainDepFromCompany(req.get_arg("name"));
 			return shared_ptr<httpserver::http_response>(new httpserver::string_response("Main Department removed from company! :"+req.get_arg("name")));
 		}
 };
@@ -962,54 +914,7 @@ class companyTest : public ::testing::Test
 {	public:
 	Company *comp=comp->getCompObject();
 };
-TEST_F(companyTest, empsOfDeps) {
-	Department *dep1= new Department("dep1");
-	Department *dep2= new Department("dep2");
-	Department *dep3= new Department("dep3");
-	Department *dep4= new Department("dep4");
-	Department *dep5= new Department("dep5");
-	Department *dep6= new Department("dep6");
-	Department *dep7= new Department("dep7");
-	Department *dep8= new Department("dep8");
-	Department *dep9= new Department("dep9");
-	Department *dep10= new Department("dep10");
-	Employee *emp1=Employee::Create("emp1",16,TESTER,1000);
-    Employee *emp2=Employee::Create("emp2",25,DEVELOPER,3000);
-    Employee *emp3=Employee::Create("emp3",24,MANAGER,2300);
-    Employee *emp4=Employee::Create("emp4",24,DEVELOPER,2300);
-    Employee *emp5=Employee::Create("emp5",24,TESTER,2350);
-    Employee *emp6=Employee::Create("emp6",24,DEVELOPER,2360);
-    Employee *emp7=Employee::Create("emp7",24,HR,6500);
-    Employee *emp8=Employee::Create("emp8",24,HR,600);
-    Employee *emp9=Employee::Create("emp9",29,TEAM_LEAD,600);
-	Employee *emp11=Employee::Create("emp11", 10, MANAGER, 2000);
-	Employee *emp10=Employee::Create("emp10",29,DEVELOPER,600);
-	comp->addEmpToCompany(*emp10);
-	comp->addEmpToCompany(*emp11);
-
-	comp->addMainDepToCompany(*dep1);
-	comp->addMainDepToCompany(*dep2);
-	dep1->addSubDep(*dep3,comp);
-	dep1->addSubDep(*dep4,comp);
-	dep3->addSubDep(*dep5,comp);
-	dep3->addSubDep(*dep6,comp);
-	dep2->addSubDep(*dep7,comp);
-	dep2->addSubDep(*dep8,comp);
-	dep7->addSubDep(*dep9,comp);
-	dep7->addSubDep(*dep10,comp);
-	dep8->addSubDep(*dep10,comp);
-	//---------------------------
-	dep1->addEmpToDep(*emp1,comp);
-	dep2->addEmpToDep(*emp2,comp);
-	dep3->addEmpToDep(*emp3,comp);
-	dep4->addEmpToDep(*emp4,comp);
-	dep5->addEmpToDep(*emp5,comp);
-	dep6->addEmpToDep(*emp6,comp);
-	dep7->addEmpToDep(*emp7,comp);
-	dep8->addEmpToDep(*emp8,comp);
-	dep9->addEmpToDep(*emp9,comp);
-	dep9->addEmpToDep(*emp5,comp);
-	dep8->addEmpToDep(*emp1,comp);
+TEST_F(companyTest, empsOfDeps_Test) {
 	comp->allEmployees();
 	EXPECT_EQ( 9,(int)comp->empsOfDeps.size());
 	}
@@ -1030,16 +935,17 @@ TEST_F(companyTest, floatingEmpsTest) {
 
 int main ()
 {
-	httpserver::webserver ws = httpserver::create_webserver(8082);
+	SetupComany();
+	httpserver::webserver ws = httpserver::create_webserver(8094);
 	GetEmployeesOfDepartments EmpOfDeps;
 	ws.register_resource("/GetEmployeesOfDepartments", &EmpOfDeps);
 	AddMainDepartmentToCompany depTocomp;
 	ws.register_resource("/AddMainDepartmentToCompany", &depTocomp);
 	DeleteDepartmentfromCompany deletedep;
 	ws.register_resource("/DeleteDepartmentfromCompany", &deletedep);
-	 ws.start(true);
-	/*::testing::InitGoogleTest();
+	// ws.start(true);
+	::testing::InitGoogleTest();
 	return RUN_ALL_TESTS( ) ;
-*/
+
 }
 
