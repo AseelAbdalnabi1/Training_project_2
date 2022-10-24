@@ -3,6 +3,7 @@ the second copy of the c++ training project
 
 In order to build and run using cmake:
 on unix terminal:
+
 1- cd Training_project_
 2- mkdir build
 3- cd build
