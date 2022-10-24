@@ -5,10 +5,15 @@ In order to build and run using cmake:
 on unix terminal:
 
 1- cd Training_project_
+
 2- mkdir build
+
 3- cd build
+
 4- cmake ..
+
 5- make
+
 6-./Training_project
 
 NOTE : the main uploaded runs the googletest be defult, in order to run the REST API then do the following:
