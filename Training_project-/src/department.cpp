@@ -15,30 +15,23 @@
 using namespace std;
 class Department;
 class Company;
-Employee * findEmployeeInDep(Employee NeededEmp,Company *compObj,vector<Department>* RangeOfDeps);
-
-Department * findDepartment(Department *neededDep,Company *compObj);
-
-Employee *findEmployeeInCompany(Employee emp,Company *compObj);
-set<string> Department::NameOFDepartments ={};
-Department::Department(string DepName,vector<Department> SubDeps,vector<Employee> EmpsOfDep){
-    this->setSubDeps(SubDeps);
-	this->setEmpsOfDep(EmpsOfDep);
-	if(this->setDepName(DepName)){
-	cout<<"department created with DepName :"<<this->getDepName()<<endl;
+set<string> Department::nameOFDepartments ={};
+Department::Department(string departmentName){
+	if(this->setDepartmentName(departmentName)){
+	cout<<"department created with DepName :"<<this->getDepartmentName()<<endl;
 	}
 	else{
 		cout<<"department name already exits, this object will be destroyed"<<endl;
 		Department::~Department();
 	}
 }
-vector <Employee> *Department::getEmpsOfDep(){
-	return &(this->EmpsOfDep);
+vector <Employee> *Department::getEmployeesOfDepartment(){
+	return &(this->employeesOfDepartment);
 }
-vector <Employee> *Department::getEmpsOfDep(Company *compObj){
-	Department *dep=findDepartment(this,compObj);
+vector <Employee> *Department::getEmployeesOfDepartment(Company *company_object){
+	Department *dep=company_object->findDepartment(this);
 	if(!(dep==nullptr)){
-		return dep->getEmpsOfDep();
+		return dep->getEmployeesOfDepartment();
 	}
 	else{
 		cout<<"department not found in company"<<endl;
@@ -46,104 +39,66 @@ vector <Employee> *Department::getEmpsOfDep(Company *compObj){
 	}
 
 }
-void Department::setEmpsOfDep(vector <Employee> EmpsOfDep){
-	this->EmpsOfDep=EmpsOfDep;
-}
-void Department::setEmpsOfDep(vector <Employee> EmpsOfDep,Company *compObj){
-	Department *dep=findDepartment(this,compObj);
-	if(!(dep==nullptr)){
-		dep->setEmpsOfDep(EmpsOfDep);//added to department
-		this->setEmpsOfDep(EmpsOfDep);
-		for(auto i=EmpsOfDep.begin();i!=EmpsOfDep.end();i++){
-			if(find(compObj->EmpsOfAllCompany.begin(),compObj->EmpsOfAllCompany.end(),(*i))==compObj->EmpsOfAllCompany.end()){
-				compObj->EmpsOfAllCompany.push_back((*i));//added to EmpsOfAllCompany
-			}
-		}
-		return;
-	}
-	else{
-		cout<<"department not found in company "<<endl;
-		cout<<"Employees are not inserted in department "<<endl;
-		return;
-	}
-
-}
 bool Department::isAnySubDeps(){
-	return getSubDeps()->size()!=0;
+	return getSubDepartments()->size()!=0;
 }
-vector<Department> *Department::getSubDeps(){
-    return &(SubDeps);
+vector<Department> *Department::getSubDepartments(){
+    return &(subDepartments);
 }
-vector<Department> *Department::getSubDeps(Company *compObj){
-	Department *dep=findDepartment(this,compObj);
+vector<Department> *Department::getSubDepartments(Company *company_object){
+	Department *dep=company_object->findDepartment(this);
 	if(dep!=nullptr){//parent found
-				return dep->getSubDeps();
+				return dep->getSubDepartments();
 		}
 	else{//parent not found
 		cout<<"department not found in company "<<endl;
 		return nullptr;
 	}
 }
-void Department::setSubDeps(vector<Department> SubDeps){
-	this->SubDeps=SubDeps;
+
+string Department::getDepartmentName(){
+	return this->departmentName;
 }
-void Department::setSubDeps(vector<Department> SubDeps,Company *compObj){
-	Department *dep=findDepartment(this,compObj);
-	cout<<dep->getDepName()<<endl;
-	if(!(dep==nullptr)){
-		cout<<"in setSubDep: "<<dep->getDepName()<<endl;
-			dep->setSubDeps(SubDeps);
-			this->setSubDeps(SubDeps);
-		}
-		else{
-			cout<<"department not found in company "<<endl;
-			cout<<"SubDeps are not inserted in department "<<endl;
-			return;
-		}
-}
-string Department::getDepName(){
-	return this->DepName;
-}
-bool Department::setDepName(string DepName){
-	if (this->NameOFDepartments.find(DepName) == this->NameOFDepartments.end()) {
-		this->NameOFDepartments.insert(DepName);
-		this->DepName=DepName;
+bool Department::setDepartmentName(string department_name){
+	if (this->nameOFDepartments.find(department_name) == this->nameOFDepartments.end()) {
+		this->nameOFDepartments.insert(department_name);
+		this->departmentName=department_name;
 		return true;
 	}
 	return false;
 
 }
-bool Department::removeEmpFromDep(Employee emp){
-	auto i=find(this->EmpsOfDep.begin(), this->EmpsOfDep.end(), emp);//searching for emp in Employee of department
-		if(i != this->EmpsOfDep.end()){
-			this->EmpsOfDep.erase(i);
-			cout<<"Employee with "<<emp.getEmpId()<<" removed successfully from "<<this->DepName<<endl;
+bool Department::removeEmployeeFromDepartment(Employee employee){
+	auto i=find(this->employeesOfDepartment.begin(), this->employeesOfDepartment.end(), employee);//searching for emp in Employee of department
+		if(i != this->employeesOfDepartment.end()){
+			this->employeesOfDepartment.erase(i);
+			cout<<"Employee with "<<employee.getEmployeeId()<<" removed successfully from "<<this->departmentName<<endl;
 			return true;//emp found in department and has been deleted
 
 		}else{
-			cout<<"Employee with "<<emp.getEmpId()<<" dose not exists in "<<this->DepName<<endl;
+			cout<<"Employee with "<<employee.getEmployeeId()<<" dose not exists in "<<this->departmentName<<endl;
 			return false;//emp did not found in department and has not been deleted
 		}
 }
-void Department::removeEmpFromDep(Employee emp,Company *compObj){
-	Department *dep=findDepartment(this,compObj);//we try to find the department(search for the required department)
+void Department::removeEmployeeFromDepartment(Employee employee,Company *company_object){
+	Department *dep=company_object->findDepartment(this);//we try to find the department(search for the required department)
 	if(!(dep==nullptr)){//the required department is found
-		bool deletedFromDep=dep->removeEmpFromDep(emp);
+		bool deletedFromDep=dep->removeEmployeeFromDepartment(employee);
 		if(deletedFromDep==1){//we make sure the emp is found in the required department and has been deleted
-			Employee *empInOtherDep=findEmployeeInDep(emp,compObj,compObj->getMainDeps());//we check if the emp belongs to another department in company---using findEmployeeInDep function
-			if(empInOtherDep==nullptr){	//if emp  belongs to another dep---we won't delete it form EmpsOfAllCompany
-				Employee* EmpPtr=findEmployeeInCompany(emp,compObj);
+			Employee *empInOtherDep=company_object->findEmployeeInDepartment(employee,company_object->getMainDepartments());//we check if the emp belongs to another department in company---using findEmployeeInDep function
+			if(empInOtherDep==nullptr){	//if emp  belongs to another dep---we won't delete it form employeesOfAllCompany
+				Employee* EmpPtr=company_object->findEmployeeInCompany(employee);
 			if(EmpPtr!=nullptr){
-				compObj->EmpsOfAllCompany.erase(remove(compObj->EmpsOfAllCompany.begin(), compObj->EmpsOfAllCompany.end(), (*EmpPtr)),  compObj->EmpsOfAllCompany.end());
-				cout<<"employee found and deleted from EmpsOfAllCompany successfully"<<endl;
+				company_object->employeesOfAllCompany.erase(remove(company_object->employeesOfAllCompany.begin(), company_object->employeesOfAllCompany.end(), (*EmpPtr)),  company_object->employeesOfAllCompany.end());
+				cout<<"employee found and deleted from employeesOfAllCompany successfully"<<endl;
 				return;
 			}else{
-				cout<<"employee can't be found in EmpsOfAllCompany and has not been deleted"<<endl;
+				cout<<"employee can't be found in employeesOfAllCompany and has not been deleted"<<endl;
 				return;
 			}
 		}
 		else{
-			cout<<"emp is part of another department and thus can't be deleted from EmpsOfAllCompany"<<endl;
+			cout<<"emp is part of another department and thus can't be deleted from employeesOfAllCompany"<<endl;
 			return;
 		}
 
@@ -156,28 +111,28 @@ void Department::removeEmpFromDep(Employee emp,Company *compObj){
 		return;
 	}
 }
-bool Department::addEmpToDep(Employee emp){
-	auto i=find(this->EmpsOfDep.begin(), this->EmpsOfDep.end(), emp);//searching employees of department
-		if(i == this->EmpsOfDep.end()){//if employee not found then add it
-	        this->EmpsOfDep.push_back(emp);
+bool Department::addEmployeeToDepartment(Employee employee){
+	auto i=find(this->employeesOfDepartment.begin(), this->employeesOfDepartment.end(), employee);//searching employees of department
+		if(i == this->employeesOfDepartment.end()){//if employee not found then add it
+	        this->employeesOfDepartment.push_back(employee);
 	        cout<<"employee has successfully added in department"<<endl;
 	        return true;
-	}else if(i != this->EmpsOfDep.end()){// if found --employee is not added to department and the function will return with false value
+	}else if(i != this->employeesOfDepartment.end()){// if found --employee is not added to department and the function will return with false value
 		cout<<"employee already exists in department"<<endl;
 		return false;
 	}
 }
-void Department::addEmpToDep(Employee emp,Company *compObj){
-	Department *dep=findDepartment(this,compObj);
+void Department::addEmployeeToDepartment(Employee employee,Company *company_object){
+	Department *dep=company_object->findDepartment(this);
 	if(!(dep==nullptr)){
-		if(dep->addEmpToDep(emp)){
-			Employee* EmpPtr=findEmployeeInCompany(emp,compObj);
+		if(dep->addEmployeeToDepartment(employee)){
+			Employee* EmpPtr=company_object->findEmployeeInCompany(employee);
 			if(EmpPtr==nullptr){
-				compObj->EmpsOfAllCompany.push_back(emp);
-				cout<<"employee added to company emp name: "<<emp.getName()<<endl;
+				company_object->employeesOfAllCompany.push_back(employee);
+				cout<<"employee added to company emp name: "<<employee.getName()<<endl;
 				return;
 			}else{
-				cout<<"employee already found in EmpsOfAllCompany"<<endl;
+				cout<<"employee already found in employeesOfAllCompany"<<endl;
 				return;
 			}
 		}
@@ -190,39 +145,39 @@ void Department::addEmpToDep(Employee emp,Company *compObj){
 	}
 
 }
-void Department::RemoveSubDep(Department department){
-     auto i=find(this->getSubDeps()->begin(), this->getSubDeps()->end(),department);
-     if(i!=this->getSubDeps()->end()){
-    	 this->getSubDeps()->erase(i);
-   	     cout<<"Sub_department "<<department.DepName<<" removed successfully from"<<this->DepName<<endl;
+void Department::RemoveSubDepartment(Department department){
+     auto i=find(this->getSubDepartments()->begin(), this->getSubDepartments()->end(),department);
+     if(i!=this->getSubDepartments()->end()){
+    	 this->getSubDepartments()->erase(i);
+   	     cout<<"Sub_department "<<department.departmentName<<" removed successfully from"<<this->departmentName<<endl;
    	     return;
      }else{
-    	 cout<<"sub_department "<<department.DepName<<"dose not exists in "<<this->DepName<<endl;
+    	 cout<<"sub_department "<<department.departmentName<<"dose not exists in "<<this->departmentName<<endl;
     	 return;
      }
 	}
-void Department::RemoveSubDep(Department department,Company *compObj){
-	Department *dep=findDepartment(this,compObj);
+void Department::RemoveSubDepartment(Department department,Company *company_object){
+	Department *dep=company_object->findDepartment(this);
 	if(!(dep==nullptr)){
-		dep->RemoveSubDep(department);
-		this->RemoveSubDep(department);
+		dep->RemoveSubDepartment(department);
+		this->RemoveSubDepartment(department);
 		return;
 	}else{
 		cout<<"Parent Department not found in Company"<<endl;
 		return;
 	}
 }
-void Department::addSubDep(Department dep){
-	SubDeps.push_back(dep);
-	cout<<"sub-department ("<<dep.getDepName()<< ")added successfully"<<endl;
+void Department::addSubDepartment(Department department){
+	subDepartments.push_back(department);
+	cout<<"sub-department ("<<department.getDepartmentName()<< ")added successfully"<<endl;
 
 }
-void Department::addSubDep(Department department,Company *compObj){
-	Department* dep=findDepartment(this,compObj);
-	cout<<"in the add subDep :  "<<this->getDepName()<<endl;;
+void Department::addSubDepartment(Department department,Company *company_object){
+	Department* dep=company_object->findDepartment(this);
+	cout<<"in the add subDep :  "<<this->getDepartmentName()<<endl;;
 		if(dep!=nullptr){
-			dep->addSubDep(department);
-			this->addSubDep(department);
+			dep->addSubDepartment(department);
+			this->addSubDepartment(department);
 			return;
 		}else{
 			cout<<" Department not found in Company"<<endl;
@@ -230,17 +185,18 @@ void Department::addSubDep(Department department,Company *compObj){
 		}
 delete dep;
 }
+
 Department::~Department(){
 }
-bool Department::operator == (Department depObj) {
-        if(depObj.getDepName() == this->getDepName()) {
+bool Department::operator == (Department department_object) {
+        if(department_object.getDepartmentName() == this->getDepartmentName()) {
         	return true;
         } else {
         	return false;
         }
     }
-bool Department::operator == (string nameOfDep) {
-        if(nameOfDep == this->getDepName()) {
+bool Department::operator == (string name_of_department) {
+        if(name_of_department == this->getDepartmentName()) {
         	return true;
         } else {
         	return false;

@@ -15,30 +15,25 @@ enum ROLE {CEO, MANAGER, TEAM_LEAD, DEVELOPER, TESTER, HR};
 
 class Employee : public Person{
 private:
-	ROLE Role;
-	int Salary;
-	static int ID;
-	int empID;
-	void setEmpId(int empID);
+	ROLE role;
+	int salary;
+	static int id;
+	int employee_id;
+	void setEmployeeId(int employee_id);
 public:
-	Employee(std::string Name,float Age ,ROLE Role,int Salary);
-	static Employee* Create(std::string Name,float Age ,ROLE RoleType,int Salary);
-	std::string getNameFromComp(Company *compObj);
-	void setNameInCompany(std::string Name,Company *compObj);
-	void setAgeInComapny(float Age,Company *compObj);
-	float getAgeFromCompany(Company *compObj);
-
-	void setRole(ROLE Role);
-	void setRole(ROLE Role,Company *compObj);
+	Employee(std::string name,float age ,ROLE role,int salary);
+	static Employee* create(std::string name,float age ,ROLE roleType,int salary);
+	void setRole(ROLE role);
+	void setRole(ROLE role,Company *company_object);
 	std::string getRole();
-	std::string getRole(Company *compObj);
+	std::string getRole(Company *company_object);
 	void setSalary(int salary);
-	void setSalary(int salary,Company *compObj);
+	void setSalary(int salary,Company *company_object);
 	int getSalary();
-	int getSalary(Company *compObj);
-	int getEmpId();
-	bool operator == (Employee Emp);
-	bool operator == (int const &empID);
+	int getSalary(Company *company_object);
+	int getEmployeeId();
+	bool operator == (Employee Employee);
+	bool operator == (int const &employee_id);
 	~Employee();
 
 };

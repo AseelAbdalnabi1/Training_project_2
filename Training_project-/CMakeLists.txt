@@ -8,17 +8,16 @@ project(Training_project)
 add_executable(
 	Training_project
 	src/Training_Project.cpp
-	src/CEO.cpp
+	src/ceo.cpp
 	src/company.cpp
 	src/department.cpp
-	src/DEVELOPER.cpp
+	src/developer.cpp
 	src/employee.cpp
-	src/hash.cpp
-	src/HR.cpp
-	src/MANAGER.cpp
+	src/hr.cpp
+	src/manger.cpp
 	src/person.cpp
-	src/TEAM_LEAD.cpp
-	src/TESTER.cpp
+	src/team_lead.cpp
+	src/tester.cpp
 )
 target_link_libraries(Training_project PUBLIC gtest)
 

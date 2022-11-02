@@ -10,14 +10,14 @@
 #include<string>
 class Person{
 private:
-	std::string Name;
-	float Age;
+	std::string name;
+	float age;
 public:
-	Person(std::string Name,float Age);
+	Person(std::string name,float age);
 	std::string getName();
-	void setName(std::string Name);
+	void setName(std::string name);
 	float getAge();
-	void setAge(float Age);
+	void setAge(float age);
 	~Person();
 };
 

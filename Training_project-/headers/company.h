@@ -12,43 +12,50 @@
 #include <iostream>
 #include <vector>
 #include <set>
+#include <unordered_map>
 class Employee;
 class Department;
 
 class Company {
 private:
-    Employee *CeoEmp=NULL;
-    std::vector<Department> MainDeps;
-    static Company *compObject;
-    static std::set<std::string> ChildsOfDeps;
+    Employee *ceoEmployee=NULL;
+    std::vector<Department> mainDepartments;
+    static Company *companyObject;
+    static std::set<std::string> childrenOfDepartments;
     Company();
     ~Company();
 public:
-    static std::vector<Employee> empsOfDeps;//no duplicate
-    static std::vector<Employee> empsOfMultiDeps_Results;
-    static std::vector<Employee> listOfFloatingEmps;
-    static std::vector<Employee> EmpsOfAllCompany;//all employees in company(regardless if they are in deps or not)
-    static std::vector<Employee> allEmpsOfDepartments;//employees in Deps in company
-    static Company *getCompObject(){
-    	if(!(compObject))
-    		compObject=new Company;
-    	return compObject;
+    static int flag;
+    static Department *foundDepartment;
+    //static std::vector<Employee> employeesOfDepartments;//no duplicate //??
+    //static std::vector<Employee> employeesOfMultiDepartmentsResults;//??
+    //static std::vector<Employee> listOfFloatingEmps;//??
+    static std::vector<Employee> employeesOfAllCompany;//all employees in company(regardless if they are in deps or not)
+    static std::vector<Employee> allEmployeesOfDepartmentsWithDuplicate;//employees in Deps in company
+    static Company *getCompanyObject(){
+    	if(!(companyObject))
+    		companyObject=new Company;
+    	return companyObject;
     }
-    Employee getCeoEmp();
-    void setCeoEmp(Employee CeoEmp);
-    void setMainDeps(std::vector<Department> MainDeps);
-    std::vector<Department>* getMainDeps();
-    void addMainDepToCompany(Department dep);
-    void removeMainDepFromCompany(Department dep);
-    void removeMainDepFromCompany(std::string depName);
-    void addEmpToCompany(Employee emp);
-    void removeEmpFromCompany(Employee emp);
-    std::vector<Employee> allEmployees();
-    std::vector<Employee> empsWithSameSalary();
-    std::vector<Employee> empsOfMultiDeps();
-    bool loop_IN_Deps_hand(Department dep);
-    bool loop_IN_Deps();
-    bool floatingEmps();
+    Employee getCeoEmployee();
+    void setCeoEmployee(Employee ceo_employee);
+    std::vector<Department>* getMainDepartments();
+    Department* addMainDepartmentToCompany(Department department);
+    void removeMainDepartmentFromCompany(Department department);
+    void removeMainDepartmentFromCompany(std::string department_name);
+    void addEmployeeToCompany(Employee employee);
+    void removeEmployeeFromCompany(Employee employee);
+    static void getAllEmployeesUsingThreads(Department department, std::vector<Employee> *employeesOfDepartments);
+    std::vector<Employee> getAllEmployees();
+    int getEmployeesWithSameSalary();
+    std::vector<Employee> getEmployeesOfMultipleDepartments();
+    bool isThereAnyLoopsInDepartmentsHand(Department parent_department);
+    bool isThereAnyLoopsInDepartments();
+    std::vector<Employee> getfloatingEmployees();
+    Department * findDepartment(Department *needed_department);
+    Department *findDepartmenthand(Department *needed_department,Department *parent_department,int &flag);
+    Employee * findEmployeeInDepartment(Employee needed_employee,std::vector<Department>* range_of_departments);
+    Employee *findEmployeeInCompany(Employee employee);
 
 
 };

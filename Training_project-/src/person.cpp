@@ -9,21 +9,21 @@
 #include <string>
 using namespace std;
 
-Person::Person(string Name,float Age){
-this->Name= Name;
-this->Age=Age;
+Person::Person(string name,float age){
+this->name= name;
+this->age=age;
 }
 string Person::getName(){
-return this->Name;
+return this->name;
 }
-void Person::setName(string Name){
-this->Name=Name;
+void Person::setName(string name){
+this->name=name;
 }
 float Person::getAge(){
-return this->Age;
+return this->age;
 }
-void Person::setAge(float Age){
-this->Age=Age;
+void Person::setAge(float age){
+this->age=age;
 }
 Person::~Person(){
 }
