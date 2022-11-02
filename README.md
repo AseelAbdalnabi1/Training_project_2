@@ -16,7 +16,7 @@ on unix terminal:
 
 6-./Training_project
 
-NOTE : the main uploaded runs the googletest be defult, in order to run the REST API then do the following:
+NOTE : the main uploaded runs the googletest by defult, in order to run the REST API then do the following:
 1. go to Training_project.cpp in the folder src
 2. remove the (//) from (// ws.start(true);) in line number 946
 3. then compile it and run it again 
