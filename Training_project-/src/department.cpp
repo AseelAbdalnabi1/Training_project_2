@@ -15,15 +15,17 @@
 using namespace std;
 class Department;
 class Company;
-set<string> Department::nameOFDepartments ={};
-Department::Department(string departmentName){
-	if(this->setDepartmentName(departmentName)){
-	cout<<"department created with DepName :"<<this->getDepartmentName()<<endl;
-	}
-	else{
-		cout<<"department name already exits, this object will be destroyed"<<endl;
-		Department::~Department();
-	}
+int Department::id=0;
+Department::Department(string department_name){
+	setDepartmentName(departmentName);
+	setDepartmentId(id+=1);
+	cout<<"Department with : "<<department_name<<" & ID : "<<this->getDepartmentId()<<" has been created!"<<endl;
+}
+void Department::setDepartmentId(int department_id){//private function
+	this->department_id=department_id;
+}
+int Department::getDepartmentId(){
+	return this->department_id;
 }
 vector <Employee> *Department::getEmployeesOfDepartment(){
 	return &(this->employeesOfDepartment);
@@ -59,16 +61,10 @@ vector<Department> *Department::getSubDepartments(Company *company_object){
 string Department::getDepartmentName(){
 	return this->departmentName;
 }
-bool Department::setDepartmentName(string department_name){
-	if (this->nameOFDepartments.find(department_name) == this->nameOFDepartments.end()) {
-		this->nameOFDepartments.insert(department_name);
-		this->departmentName=department_name;
-		return true;
-	}
-	return false;
-
+void Department::setDepartmentName(string department_name){
+    this->departmentName=department_name;
 }
-bool Department::removeEmployeeFromDepartment(Employee employee){
+bool Department::removeEmployeeFromDepartment(Employee employee){//??
 	auto i=find(this->employeesOfDepartment.begin(), this->employeesOfDepartment.end(), employee);//searching for emp in Employee of department
 		if(i != this->employeesOfDepartment.end()){
 			this->employeesOfDepartment.erase(i);
@@ -185,20 +181,12 @@ void Department::addSubDepartment(Department department,Company *company_object)
 		}
 delete dep;
 }
-
+bool Department::operator == (Department department_object){
+	return (department_object.getDepartmentId() == this->getDepartmentId());
+}
+bool Department::operator == (int const &department_id){
+	return (department_id == this->getDepartmentId());
+}
 Department::~Department(){
 }
-bool Department::operator == (Department department_object) {
-        if(department_object.getDepartmentName() == this->getDepartmentName()) {
-        	return true;
-        } else {
-        	return false;
-        }
-    }
-bool Department::operator == (string name_of_department) {
-        if(name_of_department == this->getDepartmentName()) {
-        	return true;
-        } else {
-        	return false;
-        }
-    }
+

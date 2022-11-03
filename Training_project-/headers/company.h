@@ -13,6 +13,7 @@
 #include <vector>
 #include <set>
 #include <unordered_map>
+#include <algorithm>
 class Employee;
 class Department;
 
@@ -21,7 +22,6 @@ private:
     Employee *ceoEmployee=NULL;
     std::vector<Department> mainDepartments;
     static Company *companyObject;
-    //static std::set<std::string> childrenOfDepartments;
     Company();
     ~Company();
 public:
@@ -39,7 +39,7 @@ public:
     std::vector<Department>* getMainDepartments();
     Department* addMainDepartmentToCompany(Department department);
     void removeMainDepartmentFromCompany(Department department);
-    void removeMainDepartmentFromCompany(std::string department_name);
+    void removeMainDepartmentFromCompany(int department_id);
     void addEmployeeToCompany(Employee employee);
     void removeEmployeeFromCompany(Employee employee);
     static void getAllEmployeesUsingThreads(Department department, std::vector<Employee> *employeesOfDepartments);
@@ -53,8 +53,6 @@ public:
     Department *findDepartmenthand(Department *needed_department,Department *parent_department,int &flag);
     Employee * findEmployeeInDepartment(Employee needed_employee,std::vector<Department>* range_of_departments);
     Employee *findEmployeeInCompany(Employee employee);
-
-
 };
 
 

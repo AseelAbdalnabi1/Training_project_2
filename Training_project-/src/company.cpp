@@ -34,6 +34,7 @@ vector<Department> *Company::getMainDepartments(){
      return &mainDepartments;
 }
 Department* Company::addMainDepartmentToCompany(Department department){
+	cout<<department.getDepartmentName()<<endl;
 	auto department_iterator=find(getMainDepartments()->begin(),getMainDepartments()->end(), department) ;
 	if(department_iterator== getMainDepartments()->end()){
 		mainDepartments.push_back(department);
@@ -43,24 +44,23 @@ Department* Company::addMainDepartmentToCompany(Department department){
 		return &(*department_iterator);
 	}
 }
-
 void Company::removeMainDepartmentFromCompany(Department department){
-	auto i=find(getMainDepartments()->begin(),getMainDepartments()->end(), department);
-	if(i != this->getMainDepartments()->end()){
-		mainDepartments.erase(i);
-          cout<<"department has bee deleted successfully"<<endl;
+	auto department_iterator=find(getMainDepartments()->begin(),getMainDepartments()->end(), department);
+	if(department_iterator != this->getMainDepartments()->end()){
+		mainDepartments.erase(department_iterator);
+          cout<<"Department : "<< department_iterator->getDepartmentName() <<" has bee deleted successfully"<<endl;
 	 }else{
-		 cout<<"Department with  "<< department.getDepartmentName() <<"  dose not exists in company"<<endl;
+		 cout<<"Department with : "<< department.getDepartmentName() <<"  dose not exists in company"<<endl;
 	     return;
 	 }
 }
-void Company::removeMainDepartmentFromCompany(string department_name){
-	auto i=find(getMainDepartments()->begin(),getMainDepartments()->end(), department_name);
-	if(i != this->getMainDepartments()->end()){
-		mainDepartments.erase(i);
-          cout<<"Main_Department has been deleted successfully"<<endl;
+void Company::removeMainDepartmentFromCompany(int department_id){
+	auto department_iterator=find(getMainDepartments()->begin(),getMainDepartments()->end(), department_id);
+	if(department_iterator != this->getMainDepartments()->end()){
+		mainDepartments.erase(department_iterator);
+          cout<<"Main_Department : "<<department_iterator->getDepartmentId() <<" has been deleted successfully"<<endl;
 	 }else{
-		 cout<<"Department with  "<<department_name<<"  is NOT a MAIN department of the company"<<endl;
+		 cout<<"Department with  id: "<<department_id<<"  is NOT a MAIN department of the company"<<endl;
 	     return;
 	 }
 }

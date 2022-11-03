@@ -20,10 +20,13 @@ private:
 	std::string departmentName;//unique value
 	std::vector<Department> subDepartments={};
 	std::vector<Employee> employeesOfDepartment={};
-	static std::set<std::string> nameOFDepartments;
-	bool setDepartmentName(std::string department_name);
+	void setDepartmentName(std::string department_name);
+	static int id;
+	int department_id;
+	void setDepartmentId(int department_id);
 public:
-	Department(std::string departmentName);//,std::vector<Department> subDepartments={},std::vector<Employee> employeesOfDepartment={});
+	Department(std::string departmentName);
+	int getDepartmentId();
 	std::vector <Employee> *getEmployeesOfDepartment();
 	std::vector <Employee> *getEmployeesOfDepartment(Company *company_object);
 	bool isAnySubDeps();
@@ -39,7 +42,7 @@ public:
 	void addSubDepartment(Department department);
 	void addSubDepartment(Department department,Company *company_object);
 	bool operator == (Department department_object);
-	bool operator == (std::string name_of_department);
+	bool operator == (int const &department_id);
 	~Department();
 };
 
