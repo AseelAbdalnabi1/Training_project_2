@@ -114,7 +114,6 @@ class companyTest : public ::testing::Test
 	Company *comp=comp->getCompanyObject();
 };
 TEST_F(companyTest, employeesOfDepartmentsTest) {
-	//comp->getAllEmployees();
 	EXPECT_EQ( 9,(int)comp->getAllEmployees().size());
 	}
 TEST_F(companyTest, employeesWithSameSalaryTest) {

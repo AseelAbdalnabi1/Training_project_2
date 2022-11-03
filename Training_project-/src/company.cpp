@@ -14,7 +14,6 @@ using namespace std;
  Company * Company::companyObject;
  vector<Employee> Company::allEmployeesOfDepartmentsWithDuplicate  = {};//ALL EMPS FILLED BY A FUNCTION IN COMPANY-with duplication
  vector<Employee> Company::employeesOfAllCompany = {};
- set<string> Company::childrenOfDepartments={};
  int Company::flag=0;
  Department *Company::foundDepartment=nullptr;
 Company::Company(){
@@ -143,7 +142,7 @@ vector<Employee> Company::getEmployeesOfMultipleDepartments(){ //finding employe
 	return employeesOfMultiDepartmentsResults;
 }
 bool Company::isThereAnyLoopsInDepartments(){//returns true if we have a department has two parent departments
-	childrenOfDepartments={}; //clear set<string> ChildsOfDeps since it is a static
+	set<string> childrenOfDepartments={};
 	bool result;//to return the result
 	for(auto it1=this->getMainDepartments()->begin();it1!=this->getMainDepartments()->end();it1++){//searching in Main Departments of the company
 		for(auto it2=(*it1).getSubDepartments()->begin();it2!=(*it1).getSubDepartments()->end();it2++){//children of main deps
@@ -153,7 +152,7 @@ bool Company::isThereAnyLoopsInDepartments(){//returns true if we have a departm
 				return true;
 			}
 			if((*it2).isAnySubDeps()==1){ //checking if department has subDepartments ---if yes we call loop_IN_Deps_hand on that department
-				result=isThereAnyLoopsInDepartmentsHand((*it2));
+				result=isThereAnyLoopsInDepartmentsHand((*it2),&childrenOfDepartments);
 				if(result==1){
 					return true;
 				}
@@ -163,16 +162,16 @@ bool Company::isThereAnyLoopsInDepartments(){//returns true if we have a departm
 	}
 	return false;
 }
-bool Company::isThereAnyLoopsInDepartmentsHand(Department parent_department){//recursion function to search for loops in subDepartments
+bool Company::isThereAnyLoopsInDepartmentsHand(Department parent_department ,set<string> *childrenOfDepartments){//recursion function to search for loops in subDepartments
 	bool result;
 	for(auto it1=parent_department.getSubDepartments()->begin();it1!=parent_department.getSubDepartments()->end();it1++){
-		if(childrenOfDepartments.find((*it1).getDepartmentName())==childrenOfDepartments.end()){
-			childrenOfDepartments.insert((*it1).getDepartmentName());
+		if(childrenOfDepartments->count((*it1).getDepartmentName())==0){
+			childrenOfDepartments->insert((*it1).getDepartmentName());
 		}else{
 			return true;//child already exists
 		}
 		if((*it1).isAnySubDeps()==1){
-			result=isThereAnyLoopsInDepartmentsHand((*it1));
+			result=isThereAnyLoopsInDepartmentsHand((*it1),childrenOfDepartments);
 			if(result==1){
 				return true;
 			}

@@ -21,15 +21,12 @@ private:
     Employee *ceoEmployee=NULL;
     std::vector<Department> mainDepartments;
     static Company *companyObject;
-    static std::set<std::string> childrenOfDepartments;
+    //static std::set<std::string> childrenOfDepartments;
     Company();
     ~Company();
 public:
     static int flag;
     static Department *foundDepartment;
-    //static std::vector<Employee> employeesOfDepartments;//no duplicate //??
-    //static std::vector<Employee> employeesOfMultiDepartmentsResults;//??
-    //static std::vector<Employee> listOfFloatingEmps;//??
     static std::vector<Employee> employeesOfAllCompany;//all employees in company(regardless if they are in deps or not)
     static std::vector<Employee> allEmployeesOfDepartmentsWithDuplicate;//employees in Deps in company
     static Company *getCompanyObject(){
@@ -49,7 +46,7 @@ public:
     std::vector<Employee> getAllEmployees();
     int getEmployeesWithSameSalary();
     std::vector<Employee> getEmployeesOfMultipleDepartments();
-    bool isThereAnyLoopsInDepartmentsHand(Department parent_department);
+    bool isThereAnyLoopsInDepartmentsHand(Department parent_department,std::set<std::string> *childrenOfDepartments);
     bool isThereAnyLoopsInDepartments();
     std::vector<Employee> getfloatingEmployees();
     Department * findDepartment(Department *needed_department);
