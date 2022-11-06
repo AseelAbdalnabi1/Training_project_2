@@ -46,7 +46,7 @@ public:
     std::vector<Employee> getAllEmployees();
     int getEmployeesWithSameSalary();
     std::vector<Employee> getEmployeesOfMultipleDepartments();
-    bool isThereAnyLoopsInDepartmentsHand(Department parent_department,std::set<std::string> *childrenOfDepartments);
+    bool isThereAnyLoopsInDepartmentsHand(Department parent_department,std::set<int> *childrenOfDepartments);
     bool isThereAnyLoopsInDepartments();
     std::vector<Employee> getfloatingEmployees();
     Department * findDepartment(Department *needed_department);
