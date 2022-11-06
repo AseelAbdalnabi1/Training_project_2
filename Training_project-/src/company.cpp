@@ -34,7 +34,6 @@ vector<Department> *Company::getMainDepartments(){
      return &mainDepartments;
 }
 Department* Company::addMainDepartmentToCompany(Department department){
-	cout<<department.getDepartmentName()<<endl;
 	auto department_iterator=find(getMainDepartments()->begin(),getMainDepartments()->end(), department) ;
 	if(department_iterator== getMainDepartments()->end()){
 		mainDepartments.push_back(department);

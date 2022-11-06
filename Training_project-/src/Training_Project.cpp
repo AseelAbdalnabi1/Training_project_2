@@ -140,7 +140,7 @@ int main ()
 	ws.register_resource("/AddMainDepartmentToCompany", &mainDepartmentToCompany);
 	DeleteDepartmentfromCompany deleteMainDepartment;
 	ws.register_resource("/DeleteDepartmentfromCompany", &deleteMainDepartment);
-    ws.start(true);
+    //ws.start(true);
 	::testing::InitGoogleTest();
 	return RUN_ALL_TESTS( ) ;
 
