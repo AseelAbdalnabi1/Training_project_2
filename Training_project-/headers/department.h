@@ -17,11 +17,11 @@ class Employee;
 class Company;
 class Department{
 private:
-	std::string departmentName;//unique value
+	std::string departmentName;
 	std::vector<Department> subDepartments={};
 	std::vector<Employee> employeesOfDepartment={};
 	static int id;
-	int department_id;
+	int department_id;//unique id
 	void setDepartmentId(int department_id);
 public:
 	Department(std::string departmentName);
@@ -34,9 +34,9 @@ public:
 	void setDepartmentName(std::string department_name);
 	std::string getDepartmentName();
     bool removeEmployeeFromDepartment(Employee employee);
-    void removeEmployeeFromDepartment(Employee employee,Company *company_objectect);
+    void removeEmployeeFromDepartment(Employee employee,Company *company_object);
     bool addEmployeeToDepartment(Employee employee);
-    void addEmployeeToDepartment(Employee employee,Company *company_objectect);
+    void addEmployeeToDepartment(Employee employee,Company *company_object);
     void RemoveSubDepartment(Department department);
     void RemoveSubDepartment(Department department,Company *company_object);
 	void addSubDepartment(Department department);

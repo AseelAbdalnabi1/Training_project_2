@@ -103,12 +103,12 @@ int Company::getEmployeesWithSameSalary(){//returns the number of all the employ
     }
 	return numberOfEmploeesWithSameSalaries;
 }
-void Company::addEmployeeToCompany(Employee emp){//to add an employee to company without adding him to department(a floating employee)
-	auto i=find(this->employeesOfAllCompany.begin(), this->employeesOfAllCompany.end(), emp);//checks if the required employee is already in the company
+void Company::addEmployeeToCompany(Employee employee){//to add an employee to company without adding him to department(a floating employee)
+	auto i=find(this->employeesOfAllCompany.begin(), this->employeesOfAllCompany.end(), employee);//checks if the required employee is already in the company
 	if(i != this->employeesOfAllCompany.end()){//if the employee is found then return
 		cout<<"employee already exists in Company"<<endl;
 	}else{// if the employee is not found then add the required employee to employeesOfAllCompany
-		this->employeesOfAllCompany.push_back(emp);
+		this->employeesOfAllCompany.push_back(employee);
 		cout<<"Employee added successfully to the Company!"<<endl;
 	}
 	return;
@@ -123,25 +123,23 @@ void Company::removeEmployeeFromCompany(Employee employee){//to remove employee 
 	}
 	return;
 }
-//---------------------------------------------------------------------------------------------------
 vector<Employee> Company::getEmployeesOfMultipleDepartments(){ //finding employees of multiple departments
 	getAllEmployees();//calling the getAllEmployees API in order to fill the allEmployeesOfDepartmentsWithDuplicate vector
-	vector<Employee> employeesOfMultiDepartmentsResults={};//vector to store the employees of multiple departments
+	vector<Employee> employeesOfMultiDepartmentsResults={};//vector to store the employees of multiple departments(the result of this function)
 	set<int> SetOfEmployees;//set of employees in department without Repetition
-	for(auto i=allEmployeesOfDepartmentsWithDuplicate.begin();i!=allEmployeesOfDepartmentsWithDuplicate.end();i++){//getting employees of department (with multiplication)
-		if(SetOfEmployees.count((*i).getEmployeeId())==0){// if not found in setOfEmps add it in SetOfEmps
+	for(auto i=allEmployeesOfDepartmentsWithDuplicate.begin();i!=allEmployeesOfDepartmentsWithDuplicate.end();i++){//looping in employees of departments (with multiplication)
+		if(SetOfEmployees.count((*i).getEmployeeId())==0){//if the employee is not found in SetOfEmployees, then add it in SetOfEmployees
 			SetOfEmployees.insert((*i).getEmployeeId());
-		}else{//if found -then it is an employee of multiDep--we add it to empsOfMultiDeps_Results
+		}else{//if employee is found in the set ,then this employee belongs to more than one department. so,we add it to employeesOfMultiDepartmentsResults
 			employeesOfMultiDepartmentsResults.push_back((*i));
 		}
 	}
-	cout<<"Employees of multi-Departments : "<<endl;//printing Employees of multi-Departments
+	cout<<"Employees of multi-Departments : "<<endl;//printing Employees of multiple-Departments
 	for(auto i=employeesOfMultiDepartmentsResults.begin();i!=employeesOfMultiDepartmentsResults.end();i++){
 		cout<<"Employee name & ID : "<<	i->getName()<<"  |  "<<i->getEmployeeId()<<endl;;
 	}
 	return employeesOfMultiDepartmentsResults;//returning the employees of multiple departments
 }
-//-----------------------------------------------------------------------------------------------------
 bool Company::isThereAnyLoopsInDepartments(){//returns true if we have a department has more than one parent department
 	set<int> childrenOfDepartments={};//set of children of department IDs
 	bool result;//to return the result
@@ -154,7 +152,7 @@ bool Company::isThereAnyLoopsInDepartments(){//returns true if we have a departm
 			}
 			if((*it2).isAnySubDepartments()==1){ //checking if parent department has subDepartments ---if yes we call isThereAnyLoopsInDepartmentsHand on the parent department
 				result=isThereAnyLoopsInDepartmentsHand((*it2),&childrenOfDepartments);
-				if(result==1){
+				if(result==1){//if the result after recursion is 1 then true is returned and the function ends
 					return true;
 				}
 			}
@@ -203,30 +201,30 @@ vector<Employee> Company::getfloatingEmployees(){//returns a vector of employees
 	return {};//if there is no floating employees in the company then return an empty vector
 }
 
-Department * Company::findDepartment(Department *needed_department){
-	foundDepartment=nullptr;
-	flag=0;//department not found
-	int size=(int) this->getMainDepartments()->size();
-	    for(int i=0;i<size;i++){
+Department * Company::findDepartment(Department *needed_department){//checks if a department is in the company. if found then returns a pointer to that department
+	foundDepartment=nullptr;//a variable to store the department if found
+	flag=0;//flag to ensure that the department is found (1) or not found (0)
+	int size=(int) this->getMainDepartments()->size();//variable to get the number of main departments in company
+	    for(int i=0;i<size;i++){//looping between the main departments
 	    	Company::findDepartmenthand(needed_department,&(this->getMainDepartments()->at(i)),flag);
-	    	if(foundDepartment!=nullptr && flag==1){
+	    	if(foundDepartment!=nullptr && flag==1){//if department found then returns a pointer to it and break the loop
 	    		return foundDepartment;
 	    		break;
-	    	}else if(foundDepartment==nullptr && flag==0){
+	    	}else if(foundDepartment==nullptr && flag==0){ //if not found then continue
 	    		continue;
 	    	}
 	    }
 	    return nullptr;
 }
-Department *Company::findDepartmenthand(Department *needed_department,Department *parent_department,int &flag){
-	if (flag==1){
+Department *Company::findDepartmenthand(Department *needed_department,Department *parent_department,int &flag){//recursion function to find a required department in a sub-department (in company)
+	if (flag==1){//if department is already found then return a pointer to it
 		return foundDepartment;
 	}
-	if((*needed_department)==(*parent_department)){
-		flag=1;
-		foundDepartment = parent_department;
-		return foundDepartment;
-	}if((flag==0) && (parent_department->isAnySubDepartments()==1)){
+	if((*needed_department)==(*parent_department)){//if required department is the parent department then,
+		flag=1;//flag will be 1
+		foundDepartment = parent_department;//foundDepartment will be parent_department
+		return foundDepartment; //returns the found department
+	}if((flag==0) && (parent_department->isAnySubDepartments()==1)){//if department not found ,it will search in the sub department of the parent using recursion
 	    	for(auto f=parent_department->getSubDepartments()->begin();f!=parent_department->getSubDepartments()->end();f++){
 	    		Company::findDepartmenthand(needed_department,&(*f),flag);
 	    	}
@@ -234,24 +232,24 @@ Department *Company::findDepartmenthand(Department *needed_department,Department
 	}
 }
 
-Employee * Company::findEmployeeInDepartment(Employee needed_employee,vector<Department>* range_of_departments){//for hirarichy
-	for( auto it1=range_of_departments->begin();it1!=range_of_departments->end();it1++){
-		auto it2=find((*it1).getEmployeesOfDepartment()->begin(),(*it1).getEmployeesOfDepartment()->end(),needed_employee);
-		if(it2 != (*it1).getEmployeesOfDepartment()->end()){
+Employee * Company::findEmployeeInDepartment(Employee needed_employee,vector<Department>* range_of_departments){//recursion function to check if an employee belongs to a department of the company, then returns a pointer to the found employee
+	for( auto it1=range_of_departments->begin();it1!=range_of_departments->end();it1++){//looping in a level of the hierarchy of comopany's department(first-the main department,second is the sup department of the first main department...and so on )
+		auto it2=find((*it1).getEmployeesOfDepartment()->begin(),(*it1).getEmployeesOfDepartment()->end(),needed_employee);//trying to find the employee in a specified department of the loop
+		if(it2 != (*it1).getEmployeesOfDepartment()->end()){//if found then returns a pointer to the found employees
 			return &(*it2);
 		}
-		return findEmployeeInDepartment(needed_employee,(*it1).getSubDepartments());//for hirarichy
+		return findEmployeeInDepartment(needed_employee,(*it1).getSubDepartments());//if not found in the department , then call findEmployeeInDepartment on the sub-department of this department
 	}
 }
 
 
-Employee *Company::findEmployeeInCompany(Employee employee){
-	auto i=find(this->employeesOfAllCompany.begin(),this->employeesOfAllCompany.end(),employee);
-	if(i != this->employeesOfAllCompany.end()){
+Employee *Company::findEmployeeInCompany(Employee employee){//to find an employee in employeesOfAllCompany vector
+	auto i=find(this->employeesOfAllCompany.begin(),this->employeesOfAllCompany.end(),employee);//search for the employee in employeesOfAllCompany vector
+	if(i != this->employeesOfAllCompany.end()){//if found return the pointer to the required employee in employeesOfAllCompany vector
 		cout<<"employee found in employeesOfAllCompany"<<endl;
 		return &(*i);
 	}
-	else{
+	else{//if not found return nullptr
 		cout<<"employee not found in company"<<endl;
 		return nullptr;
 	}
